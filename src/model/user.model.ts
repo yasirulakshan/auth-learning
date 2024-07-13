@@ -8,12 +8,7 @@ import {
 } from "@typegoose/typegoose";
 import argon2 from "argon2";
 import log from "../utils/logger";
-
-// Assuming you need to use nanoid in an asynchronous function
-async function generateId() {
-  const { nanoid } = await import("nanoid");
-  return nanoid();
-}
+import { v4 as uuidv4 } from "uuid"; // Importing uuid
 
 @pre<User>("save", async function () {
   if (!this.isModified("password")) {
@@ -43,7 +38,7 @@ export class User {
   @prop({ required: true })
   password: string;
 
-  @prop({ required: true, default: () => generateId() })
+  @prop({ required: true, default: uuidv4 })
   verificationCode: string;
 
   @prop()
