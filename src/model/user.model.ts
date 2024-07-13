@@ -7,8 +7,13 @@ import {
   DocumentType,
 } from "@typegoose/typegoose";
 import argon2 from "argon2";
-import { nanoid } from "nanoid";
 import log from "../utils/logger";
+
+// Assuming you need to use nanoid in an asynchronous function
+async function generateId() {
+  const { nanoid } = await import("nanoid");
+  return nanoid();
+}
 
 @pre<User>("save", async function () {
   if (!this.isModified("password")) {
@@ -38,7 +43,7 @@ export class User {
   @prop({ required: true })
   password: string;
 
-  @prop({ required: true, default: () => nanoid() })
+  @prop({ required: true, default: () => generateId() })
   verificationCode: string;
 
   @prop()
@@ -51,9 +56,11 @@ export class User {
     try {
       return await argon2.verify(this.password, candidatePassword);
     } catch (error) {
-      log.error("Error validating password: ", error);
+      log.error(error, "Error validating password");
     }
   }
 }
 
 const UserModel = getModelForClass(User);
+
+export default UserModel;
