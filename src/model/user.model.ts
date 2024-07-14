@@ -5,6 +5,7 @@ import {
   prop,
   Severity,
   DocumentType,
+  index,
 } from "@typegoose/typegoose";
 import argon2 from "argon2";
 import log from "../utils/logger";
@@ -19,6 +20,7 @@ import { v4 as uuidv4 } from "uuid"; // Importing uuid
 
   this.password = hash;
 })
+@index({ email: 1 })
 @modelOptions({
   schemaOptions: { timestamps: true },
   options: {
